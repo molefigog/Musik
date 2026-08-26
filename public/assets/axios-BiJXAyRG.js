@@ -1,0 +1,1 @@
+import{t as e}from"./wrappers-BS_Rcp9E.js";var t=e(()=>{console.log(`API Service loaded`)});export{t as default};

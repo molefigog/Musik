@@ -1,0 +1,1 @@
+import{b as e}from"./runtime-core.esm-bundler-1KN3ZOHD.js";function t(){return e(`_q_`)}export{t};

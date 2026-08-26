@@ -1,0 +1,38 @@
+/.phpunit.cache
+/node_modules
+/public/build
+/public/hot
+/public/storage
+/Pos Frontend
+/storage/*.key
+/storage/pail
+/vendor
+.phpactor.json
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+npm-debug.log
+yarn-error.log
+/auth.json
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+/NID POS-win32-x64
+Pos Frontend
+Nid-Pos.zip
+# Environment files (CRITICAL)
+.env
+.env.*
+
+# Firebase / Google credentials
+public/firebase/*.json
+
+# Keys & secrets
+*.key
+*.pem
+
+# Optional (good practice)
+*.log
+public/firebase/molefi.json

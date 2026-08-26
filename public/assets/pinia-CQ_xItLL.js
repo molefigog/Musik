@@ -1,0 +1,1 @@
+import{et as e}from"./index-CClTxCAr.js";var t=async({app:t})=>{let n=e();t.use(n)};export{t as default};

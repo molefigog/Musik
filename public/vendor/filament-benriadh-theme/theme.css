@@ -1,0 +1,384 @@
+/*
+ |--------------------------------------------------------------------------
+ | Filament Benriadh Theme (dark dashboard style)
+ |--------------------------------------------------------------------------
+ */
+
+:root {
+    --rio-bg: #0a0d16;
+    --rio-surface: #11151f;
+    --rio-surface-alt: #171c28;
+    --rio-border: #2a3140;
+    --rio-text: #e5e7eb;
+    --rio-muted: #9ca3af;
+    --rio-primary: #cba24c;
+    --rio-success: #22c55e;
+    --rio-warning: #f59e0b;
+    --rio-danger: #ef4444;
+    --rio-focus-ring: #93c5fd;
+    --rio-sidebar-from: #0f172a;
+    --rio-sidebar-to: #111827;
+    --rio-card-radius: 0.9rem;
+    --rio-shadow-enabled: 1;
+    --rio-accent: var(--rio-primary);
+}
+
+.fi-body {
+    background: radial-gradient(circle at 10% -10%, rgba(59, 130, 246, 0.12), transparent 32%), var(--rio-bg);
+    color: var(--rio-text);
+}
+
+.fi-main,
+.fi-page,
+.fi-page-content {
+    background: transparent;
+}
+
+.fi-topbar {
+    background: linear-gradient(
+        180deg,
+        color-mix(in srgb, var(--rio-surface-alt) 88%, black 12%),
+        var(--rio-surface-alt)
+    );
+    border-bottom: 1px solid color-mix(in srgb, var(--rio-border) 72%, transparent);
+    backdrop-filter: blur(6px);
+}
+
+.rio-apps-dropdown {
+    margin-inline-end: 0.35rem;
+}
+
+.rio-apps-trigger {
+    border-radius: 0.7rem;
+}
+
+.rio-apps-dropdown .fi-dropdown-panel {
+    padding: 0;
+    border: 1px solid color-mix(in srgb, white 12%, transparent);
+    border-radius: 0.9rem;
+    background: linear-gradient(180deg, #141925, #101621);
+    box-shadow: 0 26px 48px rgba(0, 0, 0, 0.42);
+    min-width: 24rem;
+}
+
+.rio-apps-panel {
+    display: grid;
+    gap: 0.75rem;
+    padding: 1rem;
+}
+
+.rio-apps-grid-row {
+    display: grid;
+    gap: 0.75rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rio-apps-item {
+    display: flex;
+    min-height: 6.35rem;
+    padding: 0.85rem 0.65rem;
+    border-radius: 0.8rem;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-direction: column;
+    gap: 0.55rem;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid color-mix(in srgb, white 8%, transparent);
+    color: color-mix(in srgb, white 90%, transparent);
+    text-decoration: none;
+    transition: all 150ms ease;
+}
+
+.rio-apps-item:hover {
+    background: color-mix(in srgb, var(--rio-primary) 16%, transparent);
+    border-color: color-mix(in srgb, var(--rio-primary) 48%, transparent);
+    transform: translateY(-1px);
+}
+
+.rio-apps-item-active {
+    border-color: color-mix(in srgb, var(--rio-primary) 58%, transparent);
+    background: color-mix(in srgb, var(--rio-primary) 18%, transparent);
+}
+
+.rio-apps-item-icon-wrap {
+    display: inline-flex;
+    width: 3.45rem;
+    height: 3.45rem;
+    border-radius: 0.8rem;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(180deg, #ffffff, #eef2f7);
+    box-shadow: inset 0 -1px 0 rgba(15, 23, 42, 0.08);
+}
+
+.rio-apps-item-icon {
+    width: 1.55rem;
+    height: 1.55rem;
+    color: #1976e8;
+}
+
+.rio-apps-item-dot {
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    background: #1976e8;
+}
+
+.rio-apps-item-label {
+    font-size: 0.79rem;
+    line-height: 1.1rem;
+    font-weight: 600;
+    color: #f3f4f6;
+}
+
+.fi-sidebar {
+    background: linear-gradient(180deg, var(--rio-sidebar-from), var(--rio-sidebar-to));
+    border-right: 1px solid color-mix(in srgb, white 12%, transparent);
+}
+
+.fi-sidebar-header,
+.fi-sidebar-nav,
+.fi-sidebar-footer {
+    background: transparent;
+}
+
+.fi-sidebar-item-btn {
+    border-radius: 0.65rem;
+    color: color-mix(in srgb, white 85%, transparent);
+    transition: all 140ms ease;
+}
+
+.fi-sidebar-item-btn:hover {
+    background: color-mix(in srgb, white 10%, transparent);
+}
+
+.fi-sidebar-item.fi-active .fi-sidebar-item-btn {
+    background: linear-gradient(90deg, color-mix(in srgb, var(--rio-primary) 26%, transparent), transparent);
+    border: 1px solid color-mix(in srgb, var(--rio-primary) 44%, transparent);
+}
+
+.fi-header-heading,
+.fi-section-header-heading,
+.fi-wi-header-heading {
+    color: #ffffff;
+    letter-spacing: -0.015em;
+}
+
+.fi-ta-ctn,
+.fi-dropdown-panel,
+.fi-modal-window,
+.fi-in-table {
+    border-radius: var(--rio-card-radius);
+    border-color: var(--rio-border) !important;
+    background: linear-gradient(180deg, var(--rio-surface), var(--rio-surface-alt));
+    color: var(--rio-text);
+    box-shadow: 0 calc(18px * var(--rio-shadow-enabled)) calc(40px * var(--rio-shadow-enabled)) rgba(0, 0, 0, 0.38);
+}
+
+.fi-section,
+.fi-card,
+.fi-wi,
+.fi-ta {
+    border-radius: var(--rio-card-radius);
+}
+
+.fi-ta-header-cell,
+.fi-ta-row,
+.fi-section-content,
+.fi-wi-content {
+    border-color: color-mix(in srgb, white 10%, transparent) !important;
+}
+
+.fi-ta-row:hover,
+.fi-dropdown-list-item:hover {
+    background: color-mix(in srgb, var(--rio-primary) 12%, transparent);
+}
+
+.fi-btn,
+.fi-icon-btn,
+.fi-pagination-item,
+.fi-tabs-item {
+    border-radius: 0.65rem;
+}
+
+.fi-btn-color-primary,
+.fi-link.fi-color-primary,
+.fi-tabs-item.fi-active,
+.fi-pagination-item.fi-active {
+    --c-400: var(--rio-primary);
+    --c-500: var(--rio-primary);
+    --c-600: color-mix(in srgb, var(--rio-primary) 84%, black);
+}
+
+.fi-badge {
+    border-radius: 9999px;
+}
+
+.fi-badge-color-success,
+.fi-color-success {
+    color: var(--rio-success) !important;
+}
+
+.fi-ta-empty-state-description {
+    color: var(--rio-muted) !important;
+}
+
+.fi-dropdown-list,
+.fi-modal-window,
+.fi-notifications {
+    scrollbar-width: thin;
+    scrollbar-color: #394256 transparent;
+}
+
+.fi-dropdown-list::-webkit-scrollbar,
+.fi-modal-window::-webkit-scrollbar,
+.fi-notifications::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.fi-dropdown-list::-webkit-scrollbar-thumb,
+.fi-modal-window::-webkit-scrollbar-thumb,
+.fi-notifications::-webkit-scrollbar-thumb {
+    background: #394256;
+    border-radius: 9999px;
+}
+
+/* Light fallback (ERP layout) */
+html:not(.dark) {
+    --rio-border: #d8dde6;
+}
+
+html:not(.dark) .fi-body {
+    background: #f3f4f6;
+    color: #111827;
+}
+
+html:not(.dark) .fi-main,
+html:not(.dark) .fi-page,
+html:not(.dark) .fi-page-content {
+    background: transparent;
+}
+
+html:not(.dark) .fi-topbar {
+    background: #f8fafc;
+    border-bottom: 1px solid #d8dde6;
+    backdrop-filter: none;
+    box-shadow: none;
+}
+
+html:not(.dark) .fi-topbar-item-btn {
+    border-radius: 0.65rem;
+    color: #374151;
+}
+
+html:not(.dark) .fi-topbar-item-btn:hover {
+    background: #eef2f7;
+    color: #111827;
+}
+
+html:not(.dark) .fi-topbar-item.fi-active .fi-topbar-item-btn {
+    background: #eaf1ff;
+    border: 1px solid #cfddff;
+    color: #2563eb;
+}
+
+html:not(.dark) .fi-topbar-item-icon,
+html:not(.dark) .fi-topbar-group-toggle-icon {
+    color: currentColor;
+}
+
+html:not(.dark) .fi-sidebar {
+    background: #ffffff;
+    border-right: 1px solid #e2e8f0;
+}
+
+html:not(.dark) .rio-apps-dropdown .fi-dropdown-panel {
+    border-color: #d8dde6;
+    background: #ffffff;
+    box-shadow: 0 12px 24px rgba(15, 23, 42, 0.08);
+}
+
+html:not(.dark) .rio-apps-item {
+    background: #f8fafc;
+    border-color: #e2e8f0;
+    color: #111827;
+}
+
+html:not(.dark) .rio-apps-item:hover {
+    background: #edf2ff;
+    border-color: #c7d2fe;
+}
+
+html:not(.dark) .rio-apps-item-label {
+    color: #0f172a;
+}
+
+html:not(.dark) .fi-dropdown-panel,
+html:not(.dark) .fi-modal-window,
+html:not(.dark) .fi-in-table,
+html:not(.dark) .fi-ta-ctn,
+html:not(.dark) .fi-ta-main,
+html:not(.dark) .fi-ta-content-ctn,
+html:not(.dark) .fi-ta-content,
+html:not(.dark) .fi-ta-table,
+html:not(.dark) .fi-ta-header,
+html:not(.dark) .fi-ta-header-ctn,
+html:not(.dark) .fi-ta-header-toolbar,
+html:not(.dark) .fi-ta-empty-state,
+html:not(.dark) .fi-ta-empty-state-content {
+    background: #ffffff !important;
+    background-image: none !important;
+    border-color: #d8dde6 !important;
+    color: #111827 !important;
+    box-shadow: none !important;
+}
+
+html:not(.dark) .fi-ta-row,
+html:not(.dark) .fi-ta-cell,
+html:not(.dark) .fi-ta-header-cell,
+html:not(.dark) .fi-ta-header-group-cell,
+html:not(.dark) .fi-ta-actions-header-cell,
+html:not(.dark) .fi-ta-table-head-groups-row,
+html:not(.dark) .fi-ta-summary-row,
+html:not(.dark) .fi-ta-summary-header-row {
+    border-color: #d8dde6 !important;
+}
+
+html:not(.dark) .fi-ta-row:hover,
+html:not(.dark) .fi-ta-record:hover,
+html:not(.dark) .fi-ta-group-header-row:hover,
+html:not(.dark) .fi-dropdown-list-item:hover {
+    background: #f8fafc !important;
+}
+
+html:not(.dark) .fi-header-heading,
+html:not(.dark) .fi-section-header-heading,
+html:not(.dark) .fi-wi-header-heading,
+html:not(.dark) .fi-ta-header-heading,
+html:not(.dark) .fi-ta-group-heading,
+html:not(.dark) .fi-ta-header-cell,
+html:not(.dark) .fi-ta-cell,
+html:not(.dark) .fi-ta-col,
+html:not(.dark) .fi-breadcrumbs-item-label,
+html:not(.dark) .fi-page-sub-navigation-item-label {
+    color: #111827 !important;
+}
+
+html:not(.dark) .fi-ta-header-description,
+html:not(.dark) .fi-ta-group-description,
+html:not(.dark) .fi-ta-empty-state-description,
+html:not(.dark) .fi-ta-cell-label,
+html:not(.dark) .fi-ta-cell-content {
+    color: #64748b !important;
+}
+
+html:not(.dark) .fi-btn-color-primary,
+html:not(.dark) .fi-link.fi-color-primary,
+html:not(.dark) .fi-tabs-item.fi-active,
+html:not(.dark) .fi-pagination-item.fi-active {
+    --c-400: #3b82f6;
+    --c-500: #2563eb;
+    --c-600: #1d4ed8;
+}
