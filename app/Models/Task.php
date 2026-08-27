@@ -25,11 +25,12 @@ class Task extends Model
         'preview_path',
     ];
 
-    protected $casts = [
-        'amount' => 'decimal:2',
-        'is_paid' => 'boolean',
-        'status' => 'boolean',
-    ];
+ protected $casts = [
+
+    'amount' => 'decimal:2',
+    'is_paid' => 'boolean',
+    'status' => 'boolean',
+];
 
     public function user(): BelongsTo
     {

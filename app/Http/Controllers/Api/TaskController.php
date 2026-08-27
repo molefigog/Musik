@@ -7,6 +7,7 @@ use App\Http\Resources\TaskResource;
 use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use App\Models\ServicePrice;
 
 class TaskController extends Controller
 {
@@ -21,6 +22,10 @@ class TaskController extends Controller
         return TaskResource::collection($tasks);
     }
 
+    public function prices()
+    {
+        return ServicePrice::select('service_type', 'amount')->get();
+    }
     // POST /api/tasks — create a task for the authenticated user
     public function store(Request $request)
     {
@@ -37,17 +42,25 @@ class TaskController extends Controller
             ], 422);
         }
 
+        $amount = ServicePrice::where('service_type', $request->service_type)->value('amount');
+
+        if ($amount === null) {
+            return response()->json([
+                'message' => "No price configured for service type '{$request->service_type}'",
+            ], 422);
+        }
+
         $task = Task::create([
             'user_id' => $request->user()->id,
             'service_type' => $request->service_type,
             'title' => $request->title,
             'details' => $request->details,
             'is_paid' => false,
+            'amount' => $amount,
         ]);
 
         return (new TaskResource($task))->response()->setStatusCode(201);
     }
-
     // GET /api/tasks/{task} — single task, scoped to owner
     public function show(Request $request, Task $task)
     {

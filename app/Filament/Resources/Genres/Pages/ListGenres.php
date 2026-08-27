@@ -23,7 +23,7 @@ class ListGenres extends ListRecords
                 ->icon('heroicon-o-musical-note')
                 ->color('success')
                 ->action(function () {
-                    $genres = config('app.default_genres', []);
+                    $genres = config('music.default_genres', []);
                     $insertedCount = 0;
 
                     foreach ($genres as $title) {

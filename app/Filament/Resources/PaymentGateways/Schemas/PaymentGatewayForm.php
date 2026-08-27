@@ -22,6 +22,6 @@ class PaymentGatewayForm
             Toggle::make('enabled')
                 ->label('Enabled')
                 ->default(true),
-        ]);
+        ]); 
     }
 }

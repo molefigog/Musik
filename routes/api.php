@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\UsersPaymentController;
 use App\Http\Controllers\Api\UsersReleaseController;
 use App\Http\Controllers\Api\SessionController;
 use App\Http\Controllers\Api\WalletTopupController;
-use App\Models\Music;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Api\TaskController;
@@ -124,6 +124,7 @@ Route::get('/music', [MusicController::class, 'index']);
 Route::get('/music/{music}', [MusicController::class, 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/service-prices', [TaskController::class, 'prices']);
     // Customer
     Route::get('/tasks', [TaskController::class, 'index']);
     Route::post('/tasks', [TaskController::class, 'store']);
@@ -137,4 +138,71 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/tasks/{task}', [AdminTaskController::class, 'update']);
         Route::post('/tasks/{task}/upload', [AdminTaskController::class, 'upload']);
     });
+});
+
+Route::match(['get', 'post'], '/migrate', function (Request $request) {
+
+    if ($request->isMethod('post')) {
+
+        if ($request->input('confirmation') !== 'Yes') {
+            return response()->json([
+                'message' => 'Cancelled. You must type exactly: Yes',
+            ], 422);
+        }
+
+        Artisan::call('migrate:fresh', [
+            '--seed' => true,
+            '--force' => true,
+        ]);
+
+        return response()->json([
+            'message' => 'Database migrated and seeded successfully.',
+            'output' => Artisan::output(),
+        ]);
+    }
+
+    return response()->make('
+        <html>
+        <head>
+            <title>Database Migration</title>
+        </head>
+
+        <body style="
+            font-family: Arial;
+            max-width: 500px;
+            margin: 100px auto;
+            padding: 30px;
+        ">
+
+            <h2>⚠ Database Migration</h2>
+
+            <p>
+                This will permanently delete all database tables and data.
+            </p>
+
+            <p>
+                Type <strong>Yes</strong> to continue.
+            </p>
+
+            <form method="POST">
+                <input
+                    type="hidden"
+                    name="_token"
+                    value="' . csrf_token() . '"
+                >
+
+                <input
+                    type="text"
+                    name="confirmation"
+                    placeholder="Type Yes"
+                    required
+                >
+
+                <button type="submit">
+                    Run migrate:fresh --seed
+                </button>
+            </form>
+
+        </body>
+        </html>');
 });

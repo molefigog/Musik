@@ -17,7 +17,7 @@ return new class extends Migration {
 
             $table->string('title');
 
-            $table->string('art_cover');
+            $table->string('art_cover')->nullable();
 
             $table->timestamp('created_at')->nullable();
 

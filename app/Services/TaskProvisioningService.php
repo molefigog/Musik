@@ -22,6 +22,23 @@ class TaskProvisioningService
             return $payment->task;
         }
 
+        if ($payment->service_id) {
+            $task = Task::query()
+                ->whereKey($payment->service_id)
+                ->where('user_id', $payment->user_id)
+                ->whereNull('payment_id')
+                ->first();
+
+            if ($task) {
+                $task->update([
+                    'payment_id' => $payment->id,
+                    'is_paid' => true,
+                ]);
+
+                return $task;
+            }
+        }
+
         if (! $payment->service_type) {
             // This means whatever initiated the payment didn't tell us what
             // was being purchased. Log it loudly — a completed payment with

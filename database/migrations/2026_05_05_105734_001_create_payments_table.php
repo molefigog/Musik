@@ -21,15 +21,15 @@ return new class extends Migration {
 
             $table->string('txn_id');
 
-            $table->string('msisdn');
+            $table->string('msisdn')->nullable();
 
-            $table->string('conversation_id');
+            $table->string('conversation_id')->nullable();
 
             $table->string('type');
 
             $table->json('raw_response')->nullable();
 
-            $table->string('statusCode');
+            $table->string('statusCode')->nullable();
 
             $table->text('description');
 

@@ -363,6 +363,10 @@ class PaymentsController extends Controller
         ];
 
         if ($payments->every(fn(Payment $payment) => in_array(strtolower((string) $payment->status), ['completed', 'failed'], true))) {
+            if ($payments->every(fn(Payment $payment) => strtolower((string) $payment->status) === 'completed')) {
+                $this->provisionCompletedPayments((string) ($payments->first()->txn_id ?? $conversationId));
+            }
+
             return response()->json([
                 'status' => strtolower((string) $payments->first()->status),
                 'conversation_id' => $conversationId,
@@ -415,6 +419,7 @@ class PaymentsController extends Controller
             ->first();
 
         if ($normalizedStatus === 'completed' && !empty($payment?->txn_id)) {
+            $this->provisionCompletedPayments((string) $payment->txn_id);
             SendPaymentInvoice::dispatchFor((string) $payment->txn_id, 'mpesa');
         }
 
@@ -722,6 +727,8 @@ class PaymentsController extends Controller
         }
 
         if ($payments->every(fn(Payment $payment) => $payment->status === 'completed')) {
+            $this->provisionCompletedPayments((string) $orderId);
+
             return response()->json([
                 'success' => true,
                 'status' => 'completed',
@@ -745,6 +752,7 @@ class PaymentsController extends Controller
                 ]);
 
             if ($status === 'completed') {
+                $this->provisionCompletedPayments((string) $orderId);
                 SendPaymentInvoice::dispatchFor((string) $orderId, 'paypal');
             }
 
@@ -826,6 +834,7 @@ class PaymentsController extends Controller
                 ]);
 
             if ($status === 'completed') {
+                $this->provisionCompletedPayments((string) $orderId);
                 SendPaymentInvoice::dispatchFor((string) $orderId, 'paypal');
             }
         } catch (\Throwable $e) {

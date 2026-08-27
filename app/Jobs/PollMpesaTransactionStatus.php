@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Http\Controllers\VclController;
 use App\Models\Payment;
 use App\Jobs\SendPaymentInvoice;
+use App\Services\TaskProvisioningService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,6 +38,10 @@ class PollMpesaTransactionStatus implements ShouldQueue
         }
 
         if ($payments->every(fn(Payment $payment) => in_array(strtolower((string) $payment->status), ['completed', 'failed'], true))) {
+            if ($payments->every(fn(Payment $payment) => strtolower((string) $payment->status) === 'completed')) {
+                app(TaskProvisioningService::class)->createFromPayment($payments->first());
+            }
+
             return;
         }
 
@@ -89,6 +94,13 @@ class PollMpesaTransactionStatus implements ShouldQueue
                 ->where('type', 'mpesa')
                 ->where('conversation_id', $this->conversationId)
                 ->value('txn_id') ?? $this->conversationId);
+
+            Payment::query()
+                ->where('type', 'mpesa')
+                ->where('conversation_id', $this->conversationId)
+                ->where('status', 'completed')
+                ->get()
+                ->each(fn(Payment $payment) => app(TaskProvisioningService::class)->createFromPayment($payment));
 
             SendPaymentInvoice::dispatchFor($finalTxnId, 'mpesa');
         }
