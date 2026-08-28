@@ -15,6 +15,7 @@ use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Jeffgreco13\FilamentBreezy\BreezyCore;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -30,6 +31,19 @@ class UserPanelProvider extends PanelProvider
             ->discoverResources(in: app_path('Filament/UserResources'), for: 'App\Filament\UserResources')
             ->discoverPages(in: app_path('Filament/UserPages'), for: 'App\Filament\UserPages')
             ->discoverWidgets(in: app_path('Filament/UserWidgets'), for: 'App\Filament\UserWidgets')
+            ->plugins([
+
+                BreezyCore::make()
+                    ->myProfile(
+                        shouldRegisterUserMenu: true,
+                        userMenuLabel: 'My Profile',
+                        shouldRegisterNavigation: false,
+                        navigationGroup: 'Settings',
+                        hasAvatars: false,
+                        slug: 'my-profile'
+                    )
+                    ->enableBrowserSessions(condition: true)
+            ])
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,

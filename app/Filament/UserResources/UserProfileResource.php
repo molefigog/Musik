@@ -46,8 +46,8 @@ class UserProfileResource extends Resource
                     ->schema([
                         TextInput::make('password')
                             ->password()
-                            ->dehydrated(fn ($state) => filled($state))
-                            ->required(fn (string $context): bool => $context === 'create'),
+                            ->dehydrated(fn($state) => filled($state))
+                            ->required(fn(string $context): bool => $context === 'create'),
                     ]),
                 Section::make('Wallet & Balance')
                     ->schema([

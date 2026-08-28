@@ -61,7 +61,7 @@ class EditRelease extends EditRecord
                         ->required(),
 
                     Select::make('genre_id')
-                    ->label('Genre')
+                        ->label('Genre')
                         ->options(Genre::pluck('title', 'id'))
                         ->searchable()
                         ->required(),

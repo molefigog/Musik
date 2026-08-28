@@ -30,32 +30,32 @@ class UserMusicResource extends Resource
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
     protected static ?int $navigationSort = 2;
 
-    public static function form(Schema $schema): Schema
-    {
-        return $schema
-            ->schema([
-                TextInput::make('title')
-                    ->required()
-                    ->maxLength(255),
-                TextInput::make('price')
-                    ->numeric()
-                    ->minValue(0),
-                TextInput::make('duration')
-                    ->numeric()
-                    ->minValue(0),
-                Select::make('release_id')
-                    ->relationship('release', 'title')
-                    ->required()
-                    ->preload(),
-                Select::make('genre_id')
-                    ->relationship('genre', 'title')
-                    ->preload(),
-                FileUpload::make('file_src')
-                    ->acceptedFileTypes(['audio/mpeg', 'audio/wav', 'audio/ogg'])
-                    ->directory('music')
-                    ->required(),
-            ]);
-    }
+    // public static function form(Schema $schema): Schema
+    // {
+    //     return $schema
+    //         ->schema([
+    //             TextInput::make('title')
+    //                 ->required()
+    //                 ->maxLength(255),
+    //             TextInput::make('price')
+    //                 ->numeric()
+    //                 ->minValue(0),
+    //             TextInput::make('duration')
+    //                 ->numeric()
+    //                 ->minValue(0),
+    //             Select::make('release_id')
+    //                 ->relationship('release', 'title')
+    //                 ->required()
+    //                 ->preload(),
+    //             Select::make('genre_id')
+    //                 ->relationship('genre', 'title')
+    //                 ->preload(),
+    //             FileUpload::make('file_src')
+    //                 ->acceptedFileTypes(['audio/mpeg', 'audio/wav', 'audio/ogg'])
+    //                 ->directory('music')
+    //                 ->required(),
+    //         ]);
+    // }
 
     public static function table(Table $table): Table
     {

@@ -23,6 +23,9 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Filament\Notifications\Notification;
+use Filament\Forms\Components\Hidden;
+use App\Filament\UserResources\MusicRelationManager;
+
 
 class UserReleaseResource extends Resource
 {
@@ -40,9 +43,13 @@ class UserReleaseResource extends Resource
                     ->maxLength(255),
                 FileUpload::make('art_cover')
                     ->image()
-                    ->directory('releases'),
+                    ->disk('public')
+                    ->required()
+                    ->directory('covers'),
                 Toggle::make('published')
                     ->default(false),
+                Hidden::make('user_id')
+                    ->default(fn() => Auth::id()),
             ]);
     }
 
@@ -93,7 +100,7 @@ class UserReleaseResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            MusicRelationManager::class,
         ];
     }
 
