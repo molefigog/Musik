@@ -33,7 +33,10 @@ class PaymentGatewayResource extends Resource
     {
         return PaymentGatewaysTable::configure($table);
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getPages(): array
     {
         return [

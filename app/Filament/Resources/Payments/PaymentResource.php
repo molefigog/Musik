@@ -18,8 +18,8 @@ class PaymentResource extends Resource
 {
     protected static ?string $model = Payment::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::Wallet;
+    protected static string|\UnitEnum|null $navigationGroup = 'Payments';
     public static function table(Table $table): Table
     {
         return PaymentsTable::configure($table);
@@ -31,7 +31,10 @@ class PaymentResource extends Resource
             //
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getPages(): array
     {
         return [

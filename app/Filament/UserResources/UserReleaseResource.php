@@ -16,7 +16,7 @@ use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\BooleanColumn;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Actions\DeleteAction;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Builder;
@@ -31,7 +31,7 @@ class UserReleaseResource extends Resource
 {
     protected static ?string $model = Release::class;
     protected static ?string $navigationLabel = 'Releases';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::PlayCircle;
     protected static ?int $navigationSort = 1;
 
     public static function form(Schema $schema): Schema
@@ -60,9 +60,13 @@ class UserReleaseResource extends Resource
                 TextColumn::make('title')
                     ->searchable()
                     ->sortable(),
-                ImageColumn::make('art_cover'),
-                BooleanColumn::make('published')
-                    ->sortable(),
+                ImageColumn::make('art_cover')->disk('public'),
+
+
+                ToggleColumn::make('published')
+                    ->label('Published')
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
@@ -71,7 +75,7 @@ class UserReleaseResource extends Resource
                 //
             ])
             ->actions([
-                \Filament\Actions\EditAction::make(),
+                \Filament\Actions\EditAction::make()->label('Edit, Add Music'),
                 DeleteAction::make()
                     ->form([
                         TextInput::make('password')
@@ -103,13 +107,17 @@ class UserReleaseResource extends Resource
             MusicRelationManager::class,
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getEloquentQuery()->count();
+    }
     public static function getPages(): array
     {
         return [
             'index' => UserReleaseListPage::route('/'),
             'create' => UserReleaseCreatePage::route('/create'),
             'edit' => UserReleaseEditPage::route('/{record}/edit'),
+
         ];
     }
 

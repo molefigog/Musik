@@ -47,4 +47,17 @@ class FirebaseService
 
         return $this->messaging->sendAll($messages);
     }
+
+    public function sendCommandWithNotification(array $tokens, string $title, string $body, string $command, array $extra = [])
+    {
+        $messages = array_map(function ($token) use ($title, $body, $command, $extra) {
+            return CloudMessage::withTarget('token', $token)
+                ->withNotification(Notification::create($title, $body))
+                ->withData(array_merge([
+                    'command' => $command,
+                ], $extra));
+        }, $tokens);
+
+        return $this->messaging->sendAll($messages);
+    }
 }

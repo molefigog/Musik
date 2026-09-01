@@ -19,33 +19,36 @@ class UserForm
                     ->label('Email address')
                     ->email()
                     ->required(),
+                TextInput::make('tel')
+                    ->tel()
+                    ->default(null),
                 DateTimePicker::make('email_verified_at'),
                 TextInput::make('password')
                     ->password()
                     ->required(),
-                Textarea::make('two_factor_secret')
-                    ->default(null)
-                    ->columnSpanFull(),
-                Textarea::make('two_factor_recovery_codes')
-                    ->default(null)
-                    ->columnSpanFull(),
-                DateTimePicker::make('two_factor_confirmed_at'),
-                TextInput::make('current_team_id')
-                    ->numeric()
-                    ->default(null),
-                TextInput::make('profile_photo_path')
-                    ->default(null),
+                // Textarea::make('two_factor_secret')
+                //     ->default(null)
+                //     ->columnSpanFull(),
+                // Textarea::make('two_factor_recovery_codes')
+                //     ->default(null)
+                //     ->columnSpanFull(),
+                // DateTimePicker::make('two_factor_confirmed_at'),
+                // TextInput::make('current_team_id')
+                //     ->numeric()
+                //     ->default(null),
+                // TextInput::make('profile_photo_path')
+                //     ->default(null),
                 TextInput::make('wallet')
                     ->required()
                     ->numeric()
-                    ->default(0.0),
+                    ->default(0.0)
+                    ->disabled(),
                 TextInput::make('balance')
                     ->required()
                     ->numeric()
-                    ->default(0.0),
-                TextInput::make('tel')
-                    ->tel()
-                    ->default(null),
+                    ->default(0.0)
+                    ->disabled(),
+
             ]);
     }
 }

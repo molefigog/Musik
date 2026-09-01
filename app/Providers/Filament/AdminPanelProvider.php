@@ -34,6 +34,7 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login()
             ->viteTheme('resources/css/filament/admin/theme.css')
+            ->sidebarCollapsibleOnDesktop()
             ->colors([
                 'primary' => Color::Blue,
             ])
@@ -49,7 +50,10 @@ class AdminPanelProvider extends PanelProvider
             ])
             ->plugins([
                 FilamentBenriadhThemePlugin::make(),
-                FileManagerPlugin::make(),
+                FileManagerPlugin::make()
+                    ->navigationGroup('Media')
+                    ->navigationIcon('heroicon-o-paint-brush')
+                    ->navigationSort(2),
                 FilamentLogViewer::make(),
                 BreezyCore::make()
                     ->myProfile(

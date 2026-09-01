@@ -25,8 +25,8 @@ class ReleaseResource extends Resource
 {
     protected static ?string $model = Release::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::PlayCircle;
+    protected static string|\UnitEnum|null $navigationGroup = 'Media';
     public static function form(Schema $schema): Schema
     {
         return ReleaseForm::configure($schema);
@@ -51,7 +51,14 @@ class ReleaseResource extends Resource
             'edit' => EditRelease::route('/{record}/edit'),
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'price', 'release.title', 'genre.title'];
+    }
     public static function configure(Table $table): Table
     {
         return $table

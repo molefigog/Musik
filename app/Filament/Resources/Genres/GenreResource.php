@@ -19,7 +19,7 @@ class GenreResource extends Resource
     protected static ?string $model = Genre::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
-
+    protected static string|\UnitEnum|null $navigationGroup = 'Media';
     public static function form(Schema $schema): Schema
     {
         return GenreForm::configure($schema);
@@ -36,7 +36,10 @@ class GenreResource extends Resource
             //
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
     public static function getPages(): array
     {
         return [

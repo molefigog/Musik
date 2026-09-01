@@ -12,7 +12,11 @@ use Filament\Infolists\Components\TextEntry;
 use Filament\Actions\Action;
 use Filament\Infolists\Components\IconEntry;
 use Filament\Infolists\Components\RepeatableEntry\TableColumn;
-
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\ValidationException;
+use Filament\Notifications\Notification;
+use Filament\Forms\Components\TextInput;
 
 class UsersTable
 {
@@ -90,7 +94,30 @@ class UsersTable
             ])
             ->toolbarActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()
+                        ->form([
+                            TextInput::make('password')
+                                ->label('Confirm Password')
+                                ->password()
+                                ->required(),
+                        ])
+
+                        ->before(function (array $data) {
+                            if (! Hash::check($data['password'], Auth::user()->password)) {
+
+                                Notification::make()
+                                    ->title('Incorrect Password')
+                                    ->body('The password you entered is incorrect. Deletion was cancelled.')
+                                    ->danger()
+                                    ->send();
+
+                                throw ValidationException::withMessages([
+                                    'password' => 'Incorrect password.',
+                                ]);
+                            }
+                        })
+
+                        ->successNotificationTitle('Release deleted successfully'),
                 ]),
             ]);
     }

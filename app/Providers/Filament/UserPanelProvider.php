@@ -16,6 +16,7 @@ use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Jeffgreco13\FilamentBreezy\BreezyCore;
+use App\Filament\UserResources\Pages\WaveSurferPage;
 
 class UserPanelProvider extends PanelProvider
 {
@@ -25,12 +26,17 @@ class UserPanelProvider extends PanelProvider
             ->id('user')
             ->path('user')
             ->login()
+            ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::Blue,
             ])
             ->discoverResources(in: app_path('Filament/UserResources'), for: 'App\Filament\UserResources')
             ->discoverPages(in: app_path('Filament/UserPages'), for: 'App\Filament\UserPages')
             ->discoverWidgets(in: app_path('Filament/UserWidgets'), for: 'App\Filament\UserWidgets')
+            ->pages([
+                WaveSurferPage::class,
+            ])
+            ->sidebarCollapsibleOnDesktop()
             ->plugins([
 
                 BreezyCore::make()

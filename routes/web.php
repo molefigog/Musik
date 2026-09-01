@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Music;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
+use App\Http\Controllers\WalletPdfController;
 
 Route::get('/paypal/success', [PaymentsController::class, 'paypalSuccess']);
 Route::get('/paypal/cancel', [PaymentsController::class, 'paypalCancel']);
@@ -22,26 +22,39 @@ Route::post('/waveform/{music}', function (Request $request, Music $music) {
     Log::info('Waveform upload started', [
         'music_id' => $music->id,
     ]);
+
     if (! $request->hasFile('waveform_file')) {
         Log::warning('No waveform file received');
         return back();
     }
+
     $file = $request->file('waveform_file');
     $path = $file->store('waveforms', 'public');
+
     $music->update([
         'waveform' => $path,
         'is_published' => $request->has('is_published'),
     ]);
+
     Log::info('Waveform saved as file', [
         'path' => $path,
     ]);
 
-    return redirect()->route(
-        'filament.admin.resources.releases.edit',
-        $music->release
-    );
+    $adminUserIds = [1, 2, 3, 4];
+
+    $routeName = in_array(auth()->id(), $adminUserIds)
+        ? 'filament.admin.resources.releases.edit'
+        : 'filament.user.resources.user-releases.edit';
+
+    return redirect()->route($routeName, $music->release);
 })->name('waveform.save');
 
+
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/wallet/summary/preview', [WalletPdfController::class, 'preview'])
+        ->name('wallet.summary.preview');
+});
 // Route::get('/', [App\Http\Controllers\ChaperoneController::class, 'checkout'])->name('payment.checkout');
 Route::post('/payment', [App\Http\Controllers\ChaperoneController::class, 'checkout'])->name('payment.checkout.post');
 Route::get('/{any}', function () {

@@ -53,7 +53,11 @@
                 {{-- ACTION BAR --}}
                 <div class="flex items-center justify-between px-8 py-6 border-t border-white/10 bg-white/5">
 
-                    <p class="text-xs text-white/50">
+                    <p class="text-sm font-medium text-amber-400 flex items-center gap-2 animate-pulse">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
                         Click Save to generate and save the waveform image. This may take a few seconds.
                     </p>
 
@@ -62,7 +66,7 @@
 
                         @csrf
                         <input type="hidden" name="waveform" id="waveformInput">
-                        <input type="checkbox" name="is_published" id="publishCheckbox"
+                        <input type="checkbox" name="is_published" id="publishCheckbox" checked
                             class="accent-indigo-600 h-5 w-5">
 
                         <button id="saveBtn" type="submit"

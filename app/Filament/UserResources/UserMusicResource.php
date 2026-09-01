@@ -22,14 +22,18 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Hash;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\ToggleColumn;
 
 class UserMusicResource extends Resource
 {
     protected static ?string $model = Music::class;
     protected static ?string $navigationLabel = 'Music';
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::MusicalNote;
     protected static ?int $navigationSort = 2;
-
+    public static function getGloballySearchableAttributes(): array
+    {
+        return ['title', 'price', 'release.title', 'genre.title'];
+    }
     // public static function form(Schema $schema): Schema
     // {
     //     return $schema
@@ -76,12 +80,11 @@ class UserMusicResource extends Resource
                     ->sortable(),
                 TextColumn::make('duration')
                     ->numeric(),
-                BadgeColumn::make('is_published')
+
+                ToggleColumn::make('is_published')
                     ->label('Published')
-                    ->colors([
-                        'success' => true,
-                        'danger' => false,
-                    ]),
+                    ->sortable()
+                    ->toggleable(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable(),
@@ -90,7 +93,7 @@ class UserMusicResource extends Resource
                 //
             ])
             ->actions([
-                \Filament\Actions\EditAction::make(),
+                // \Filament\Actions\EditAction::make(),
                 DeleteAction::make()
                     ->form([
                         TextInput::make('password')
@@ -122,7 +125,10 @@ class UserMusicResource extends Resource
             //
         ];
     }
-
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getEloquentQuery()->count();
+    }
     public static function getPages(): array
     {
         return [
