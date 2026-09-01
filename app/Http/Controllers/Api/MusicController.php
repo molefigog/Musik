@@ -81,11 +81,13 @@ class MusicController extends Controller
             'release' => $music->release ? [
                 'id' => $music->release->id,
                 'title' => $music->release->title,
+                'cover_art' => $music->release->art_cover ? asset('storage/' . $music->release->art_cover) : null,
             ] : null,
 
             'genre' => $music->genre ? [
                 'id' => $music->genre->id,
                 'title' => $music->genre->title,
+
             ] : null,
         ];
     }
