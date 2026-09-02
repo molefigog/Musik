@@ -4,7 +4,7 @@ namespace App\Observers;
 
 use App\Models\Payment;
 use App\Services\WalletService;
-
+use Illuminate\Support\Facades\Log;
 
 class PaymentObserver
 {
@@ -17,6 +17,11 @@ class PaymentObserver
 
     public function updated(Payment $payment): void
     {
+        Log::info('Payment updated', [
+            'payment_id' => $payment->id,
+            'status' => $payment->status,
+            'credited_at' => $payment->credited_at,
+        ]);
 
         if ($payment->wasChanged('status') && $payment->status === 'completed') {
             $this->wallet->creditSeller($payment);
