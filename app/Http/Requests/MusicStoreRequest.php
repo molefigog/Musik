@@ -25,6 +25,7 @@ class MusicStoreRequest extends FormRequest
             'is_sold' => ['required', 'boolean'],
             'file_src' => ['nullable', 'file', 'max:15024'],
             'price' => ['required'],
+            'release_id' => ['required', 'integer', 'exists:releases,id'],
         ];
     }
 }

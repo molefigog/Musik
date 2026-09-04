@@ -10,11 +10,14 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Resources\ReleaseResource;
 use App\Http\Resources\ReleaseCollection;
+use Illuminate\Support\Facades\Auth;
 
 class UsersReleaseController extends Controller
 {
     public function index(Request $request, User $user): ReleaseCollection
     {
+        abort_if($user->id !== Auth::id(), 403);
+
         $search = $request->get('search', '');
 
         $releases = $this->getSearchQuery($search, $user)
@@ -26,6 +29,8 @@ class UsersReleaseController extends Controller
 
     public function store(Request $request, User $user): ReleaseResource
     {
+        abort_if($user->id !== Auth::id(), 403);
+
         $validated = $request->validate([
             'title' => ['required', 'string'],
             'art_cover' => ['required', 'string'],

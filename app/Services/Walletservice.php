@@ -16,7 +16,7 @@ class WalletService
 {
     public function creditSeller(Payment $payment): ?WalletTransaction
     {
-        if (! $payment->seller_id || $payment->credited_at || $payment->status !== 'completed') {
+        if ($payment->credited_at || $payment->status !== 'completed') {
             return null;
         }
 
@@ -27,9 +27,18 @@ class WalletService
                 return null;
             }
 
-            $seller = User::whereKey($locked->seller_id)->lockForUpdate()->first();
+            $sellerId = $locked->seller_id;
+            if (! $sellerId && $locked->music_id) {
+                $sellerId = $locked->music()->with('release')->first()?->release?->user_id;
+            }
+
+            $seller = $sellerId ? User::whereKey($sellerId)->lockForUpdate()->first() : null;
             if (! $seller) {
                 return null;
+            }
+
+            if (! $locked->seller_id) {
+                $locked->seller_id = $seller->id;
             }
 
             $seller->increment('balance', $locked->amount);

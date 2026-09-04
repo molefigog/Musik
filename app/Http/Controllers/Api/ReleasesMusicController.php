@@ -8,11 +8,14 @@ use Illuminate\Http\Response;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\MusicResource;
 use App\Http\Resources\MusicCollection;
+use Illuminate\Support\Facades\Auth;
 
 class ReleasesMusicController extends Controller
 {
     public function index(Request $request, Release $release): MusicCollection
     {
+        abort_if($release->user_id !== Auth::id(), 403);
+
         $search = $request->get('search', '');
 
         $allMusic = $this->getSearchQuery($search, $release)
@@ -24,6 +27,8 @@ class ReleasesMusicController extends Controller
 
     public function store(Request $request, Release $release): MusicResource
     {
+        abort_if($release->user_id !== Auth::id(), 403);
+
         $validated = $request->validate([
             'title' => ['required', 'string'],
             'price' => ['required'],
@@ -35,7 +40,8 @@ class ReleasesMusicController extends Controller
         if ($request->hasFile('file_src')) {
             $validated['file_src'] = $request
                 ->file('file_src')
-                ->store('public');
+                ->store('music', 'public');
+            $validated['file_name'] = $request->file('file_src')->getClientOriginalName();
         }
 
         $music = $release->allMusic()->create($validated);

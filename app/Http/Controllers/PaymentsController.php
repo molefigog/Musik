@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Services\CpayService;
 use App\Services\VclService;
+use App\Models\Music;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Http;
@@ -1112,9 +1113,14 @@ class PaymentsController extends Controller
         $splitAmount = $count > 0 ? round($amount / $count, 2) : $amount;
 
         return collect($itemIds)->map(function ($itemId) use ($attributes, $splitAmount, $itemType) {
+            $sellerId = $itemType === 'music'
+                ? Music::query()->whereKey($itemId)->with('release')->first()?->release?->user_id
+                : null;
+
             return Payment::create(array_merge($attributes, [
                 'music_id' => $itemType === 'music' ? $itemId : null,
                 'service_id' => $itemType === 'service' ? $itemId : null,
+                'seller_id' => $sellerId,
                 'amount' => $splitAmount,
             ]));
         });
@@ -1143,5 +1149,4 @@ class PaymentsController extends Controller
 
         return [];
     }
-
 }

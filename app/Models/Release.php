@@ -48,4 +48,9 @@ class Release extends Model
     {
         return $this->hasMany(Music::class);
     }
+
+    public function allMusic()
+    {
+        return $this->music();
+    }
 }

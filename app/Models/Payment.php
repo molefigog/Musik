@@ -23,6 +23,7 @@ class Payment extends Model
         'raw_response',
         'description',
         'user_id',
+        'seller_id',
         'music_id',
         'service_id',
         'service_type',

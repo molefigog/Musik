@@ -64,6 +64,8 @@ class MusicObserver
             'waveform' => null,
             'is_published' => false,
         ])->saveQuietly();
+
+        GenerateWaveform::dispatch($music->fresh());
     }
 
     /**

@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ReleaseCollection;
 use App\Http\Requests\ReleaseStoreRequest;
 use App\Http\Requests\ReleaseUpdateRequest;
+use Illuminate\Support\Facades\Auth;
 
 class ReleaseController extends Controller
 {
@@ -19,6 +20,7 @@ class ReleaseController extends Controller
         $search = $request->get('search', '');
 
         $releases = $this->getSearchQuery($search)
+            ->where('user_id', Auth::id())
             ->latest()
             ->paginate();
 
@@ -32,9 +34,10 @@ class ReleaseController extends Controller
         if ($request->hasFile('art_cover')) {
             $validated['art_cover'] = $request
                 ->file('art_cover')
-                ->store('public');
+                ->store('covers', 'public');
         }
 
+        $validated['user_id'] = Auth::id();
         $release = Release::create($validated);
 
         return new ReleaseResource($release);
@@ -42,6 +45,8 @@ class ReleaseController extends Controller
 
     public function show(Request $request, Release $release): ReleaseResource
     {
+        abort_if($release->user_id !== Auth::id(), 403);
+
         return new ReleaseResource($release);
     }
 
@@ -49,16 +54,18 @@ class ReleaseController extends Controller
         ReleaseUpdateRequest $request,
         Release $release
     ): ReleaseResource {
+        abort_if($release->user_id !== Auth::id(), 403);
+
         $validated = $request->validated();
 
         if ($request->hasFile('art_cover')) {
             if ($release->art_cover) {
-                Storage::delete($release->art_cover);
+                Storage::disk('public')->delete($release->art_cover);
             }
 
             $validated['art_cover'] = $request
                 ->file('art_cover')
-                ->store('public');
+                ->store('covers', 'public');
         }
 
         $release->update($validated);
@@ -68,8 +75,10 @@ class ReleaseController extends Controller
 
     public function destroy(Request $request, Release $release): Response
     {
+        abort_if($release->user_id !== Auth::id(), 403);
+
         if ($release->art_cover) {
-            Storage::delete($release->art_cover);
+            Storage::disk('public')->delete($release->art_cover);
         }
 
         $release->delete();

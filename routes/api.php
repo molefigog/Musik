@@ -23,6 +23,7 @@ use App\Http\Controllers\Api\DownloadController;
 use App\Http\Controllers\Api\FcmTokenController;
 use App\Http\Controllers\Api\UserNotificationController;
 use App\Http\Controllers\Api\PaymentGatewayController;
+use App\Http\Controllers\Api\ReleaseWorkflowController;
 
 
 Route::get('/user', function (Request $request) {
@@ -50,6 +51,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/all-music/{music}', [MusicController::class, 'show',])->name('all-music.show');
     Route::put('/all-music/{music}', [MusicController::class, 'update',])->name('all-music.update');
     Route::delete('/all-music/{music}', [MusicController::class, 'destroy',])->name('all-music.destroy');
+    Route::post('/track-upload', [MusicController::class, 'temporaryUpload'])->name('track-upload');
+    Route::patch('/update-track', [MusicController::class, 'updateTrack'])->name('update-track');
+    Route::post('/revert-upload', [MusicController::class, 'revertUpload'])->name('revert-upload');
     Route::get('/all-music', [MusicController::class, 'index'])->name('all-music.index');
     Route::post('/all-music', [MusicController::class, 'store'])->name('all-music.store');
     Route::get('/all-music/{music}', [MusicController::class, 'show',])->name('all-music.show');
@@ -62,6 +66,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/releases/{release}', [ReleaseController::class, 'show',])->name('releases.show');
     Route::put('/releases/{release}', [ReleaseController::class, 'update',])->name('releases.update');
     Route::delete('/releases/{release}', [ReleaseController::class, 'destroy',])->name('releases.destroy');
+    Route::post('/music/{music}/waveform/generate', [ReleaseWorkflowController::class, 'generateWaveform'])->name('music.waveform.generate');
+    Route::post('/music/{music}/waveform', [ReleaseWorkflowController::class, 'saveWaveform'])->name('music.waveform');
+    Route::get('/music/{music}/audio', [ReleaseWorkflowController::class, 'audio'])->name('music.audio');
     Route::get('/genres/{genre}/all-music', [GenresMusicController::class, 'index',])->name('genres.all-music.index');
     Route::post('/genres/{genre}/all-music', [GenresMusicController::class, 'store',])->name('genres.all-music.store');
     Route::get('/genres', [GenreController::class, 'index'])->name('genres.index');
