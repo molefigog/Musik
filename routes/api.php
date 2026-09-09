@@ -100,6 +100,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/v1/paypal/music/capture-order', [PaymentsController::class, 'captureMusicPayPalOrder']);
     Route::post('/v1/paypal/services/capture-order', [PaymentsController::class, 'captureServicePayPalOrder']);
 
+    Route::middleware('auth:sanctum')->post('/v1/payments/ecocash/music', [PaymentsController::class, 'ecocashCharge']);
+    Route::middleware('auth:sanctum')->post('/v1/payments/ecocash/services', [PaymentsController::class, 'ecocashChargeServices']);
+
     Route::get('/downloads', [DownloadController::class, 'index']);
     Route::get('/downloads/{music}/file', [DownloadController::class, 'download']);
 

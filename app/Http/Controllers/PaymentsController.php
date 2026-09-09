@@ -250,6 +250,123 @@ class PaymentsController extends Controller
             ->get()
             ->each(fn(Payment $payment) => $provisioning->createFromPayment($payment));
     }
+    public function ecocashCharge(Request $request)
+    {
+        $request->validate([
+            'mobileNumber' => 'required|string',
+            'amount' => 'required|numeric|min:1',
+            'item_type' => 'nullable|string',
+            'item_id' => 'nullable',
+            'service_type' => 'nullable|string|in:beat,recording,artwork',
+        ]);
+
+        $itemType = strtolower((string) $request->input('item_type', 'music'));
+        $itemIds = $this->extractPaymentItemIds($request->input('item_id'), $itemType);
+
+        $baseUrl = 'https://api.paylesotho.co.ls';
+        $merchantid = config('payments.ecocash_merchant_id');
+        $merchantname = config('payments.ecocash_merchant_name');
+        $token = config('payments.ecocash_token');
+
+        $transactionId = 'ECOCASH_' . time();
+
+        Log::info('Ecocash payment initiated', [
+            'user_id' => Auth::id(),
+            'mobileNumber' => $request->mobileNumber,
+            'amount' => $request->amount,
+        ]);
+
+        try {
+            $client = new \GuzzleHttp\Client();
+
+            $response = $client->post($baseUrl . '/api/v2/econet/payment', [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                    'Content-Type' => 'application/json',
+                ],
+                'json' => [
+                    'merchantid' => $merchantid,
+                    'amount' => $request->amount,
+                    'mobileNumber' => $request->mobileNumber,
+                    'merchantname' => $merchantname,
+                    'client_reference' => Auth::id() . '_' . $transactionId,
+                ],
+            ]);
+
+            $responseData = json_decode($response->getBody(), true);
+            Log::info('Ecocash Payment API Response: ' . json_encode($responseData));
+
+            if (!isset($responseData['status_code']) || $responseData['status_code'] !== '200') {
+                $this->createPaymentRows($itemIds, $itemType, [
+                    'user_id' => Auth::id(),
+                    'amount' => $request->amount,
+                    'msisdn' => $request->mobileNumber,
+                    'txn_id' => $transactionId,
+                    'conversation_id' => $transactionId,
+                    'type' => 'ecocash',
+                    'status' => 'failed',
+                    'description' => $request->input('description', 'Music purchase'),
+                    'service_type' => $request->input('service_type'),
+                    'title' => $request->input('title'),
+                    'raw_response' => json_encode($responseData),
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'error' => $responseData['message'] ?? 'Payment API request failed',
+                ], 500);
+            }
+
+            $payRef = $responseData['reference'];
+
+            $verificationResponse = $client->get($baseUrl . '/api/v2/econet/verify/' . $payRef, [
+                'headers' => ['Authorization' => 'Bearer ' . $token],
+            ]);
+
+            $verificationData = json_decode($verificationResponse->getBody(), true);
+            Log::info('Ecocash Confirmation API Response: ' . json_encode($verificationData));
+
+            $success = isset($verificationData['status_code']) && $verificationData['status_code'] === '200';
+            $status = $success ? 'completed' : 'failed';
+
+            $payments = $this->createPaymentRows($itemIds, $itemType, [
+                'user_id' => Auth::id(),
+                'amount' => $request->amount,
+                'msisdn' => $request->mobileNumber,
+                'txn_id' => $payRef,
+                'conversation_id' => $transactionId,
+                'type' => 'ecocash',
+                'status' => $status,
+                'description' => $request->input('description', 'Music purchase'),
+                'service_type' => $request->input('service_type'),
+                'title' => $request->input('title'),
+                'raw_response' => json_encode($verificationData),
+            ]);
+
+            if ($success) {
+                $this->provisionCompletedPayments($payRef);
+                SendPaymentInvoice::dispatchFor((string) $payRef, 'ecocash');
+            }
+
+            return response()->json([
+                'success' => $success,
+                'status' => $status,
+                'userId' => Auth::id(),
+                'transaction_id' => $payRef,
+                'payment' => $payments->first(),
+                'payments' => $payments,
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Ecocash Guzzle Request Error: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to make the API request'], 500);
+        }
+    }
+
+    public function ecocashChargeServices(Request $request)
+    {
+        $request->merge(['item_type' => 'service']);
+        return $this->ecocashCharge($request);
+    }
 
     private array $options;
     public function __construct()

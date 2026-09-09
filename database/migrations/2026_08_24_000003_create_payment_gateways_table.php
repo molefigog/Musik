@@ -23,6 +23,7 @@ return new class extends Migration
             ['name' => 'M-Pesa', 'slug' => 'mpesa', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'PayPal', 'slug' => 'paypal', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'PayPal Card', 'slug' => 'paypal_card', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'EcoCash', 'slug' => 'ecocash', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 
