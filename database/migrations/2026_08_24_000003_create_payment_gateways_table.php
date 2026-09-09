@@ -22,6 +22,7 @@ return new class extends Migration
             ['name' => 'Cpay Mobile', 'slug' => 'mobile', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'M-Pesa', 'slug' => 'mpesa', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
             ['name' => 'PayPal', 'slug' => 'paypal', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
+            ['name' => 'PayPal Card', 'slug' => 'paypal_card', 'enabled' => true, 'created_at' => now(), 'updated_at' => now()],
         ]);
     }
 

@@ -585,6 +585,20 @@ class PaymentsController extends Controller
         );
     }
 
+    /**
+     * Public config for PayPal's native Android/iOS SDKs.
+     * client_id is the publishable identifier - safe to expose. The
+     * secret used to mint OAuth tokens (config('payments.secret'))
+     * NEVER leaves the server.
+     */
+    public function paypalConfig()
+    {
+        return response()->json([
+            'client_id' => config('payments.client_id'),
+            'environment' => config('payments.mode', env('PAYPAL_MODE', 'sandbox')) === 'live' ? 'live' : 'sandbox',
+        ]);
+    }
+
     public function createMusicPayPalOrder(Request $request)
     {
         $request->validate([

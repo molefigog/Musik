@@ -1,0 +1,37 @@
+diff --git a/app/Http/Controllers/PaymentsController.php b/app/Http/Controllers/PaymentsController.php
+index 99c6cc4..c96f5a4 100644
+--- a/app/Http/Controllers/PaymentsController.php
++++ b/app/Http/Controllers/PaymentsController.php
+@@ -585,6 +585,20 @@ public function paypalPay(Request $request)
+         );
+     }
+ 
++    /**
++     * Public config for PayPal's native Android/iOS SDKs.
++     * client_id is the publishable identifier - safe to expose. The
++     * secret used to mint OAuth tokens (config('payments.secret'))
++     * NEVER leaves the server.
++     */
++    public function paypalConfig()
++    {
++        return response()->json([
++            'client_id' => config('payments.client_id'),
++            'environment' => config('payments.mode', env('PAYPAL_MODE', 'sandbox')) === 'live' ? 'live' : 'sandbox',
++        ]);
++    }
++
+     public function createMusicPayPalOrder(Request $request)
+     {
+         $request->validate([
+diff --git a/routes/api.php b/routes/api.php
+index edb1672..b34d38d 100644
+--- a/routes/api.php
++++ b/routes/api.php
+@@ -94,6 +94,7 @@
+ 
+     Route::get('/b2c', [PaymentsController::class, 'b2c']);
+     Route::post('/paypal/pay', [PaymentsController::class, 'paypalPay']);
++    Route::get('/v1/paypal/config', [PaymentsController::class, 'paypalConfig']);
+     Route::post('/v1/paypal/music/create-order', [PaymentsController::class, 'createMusicPayPalOrder']);
+     Route::post('/v1/paypal/services/create-order', [PaymentsController::class, 'createServicePayPalOrder']);
+     Route::post('/v1/paypal/music/capture-order', [PaymentsController::class, 'captureMusicPayPalOrder']);

@@ -94,6 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/b2c', [PaymentsController::class, 'b2c']);
     Route::post('/paypal/pay', [PaymentsController::class, 'paypalPay']);
+    Route::get('/v1/paypal/config', [PaymentsController::class, 'paypalConfig']);
     Route::post('/v1/paypal/music/create-order', [PaymentsController::class, 'createMusicPayPalOrder']);
     Route::post('/v1/paypal/services/create-order', [PaymentsController::class, 'createServicePayPalOrder']);
     Route::post('/v1/paypal/music/capture-order', [PaymentsController::class, 'captureMusicPayPalOrder']);
