@@ -17,6 +17,7 @@ use App\Services\PayPalService;
 use App\Jobs\PollMpesaTransactionStatus;
 use App\Jobs\SendPaymentInvoice;
 use App\Services\TaskProvisioningService;
+use App\Jobs\CreditSellerForPayment;
 
 class PaymentsController extends Controller
 {
@@ -248,7 +249,10 @@ class PaymentsController extends Controller
             ->where('txn_id', $txnId)
             ->where('status', 'completed')
             ->get()
-            ->each(fn(Payment $payment) => $provisioning->createFromPayment($payment));
+            ->each(function (Payment $payment) use ($provisioning) {
+                $provisioning->createFromPayment($payment);
+                CreditSellerForPayment::dispatch($payment->id);
+            });
     }
     public function ecocashCharge(Request $request)
     {
@@ -1113,6 +1117,10 @@ class PaymentsController extends Controller
         $baseCurrency = 'ZAR';
         $targetCurrency = 'USD';
 
+        // PayPal effectively takes ~4% on cross-currency conversion (charged to you,
+        // not the customer). Gross up the USD amount so you net the intended amount.
+        $paypalFxMarkup = config('payments.paypal_fx_markup', 0.04); // 4%
+
         try {
             $url = "https://open.er-api.com/v6/latest/{$baseCurrency}";
             if (!empty($apiKey)) {
@@ -1124,11 +1132,12 @@ class PaymentsController extends Controller
 
             if ($response->successful() && isset($data['rates'][$targetCurrency])) {
                 $rate = (float) $data['rates'][$targetCurrency];
-                $usdAmount = round(max(0.01, $amountZar * $rate), 2);
+                $usdAmount = round(max(0.01, $amountZar * $rate * (1 + $paypalFxMarkup)), 2);
 
                 return [
                     'rate' => $rate,
                     'usd_amount' => $usdAmount,
+                    'markup_applied' => $paypalFxMarkup,
                     'source' => 'open.er-api.com',
                 ];
             }
@@ -1144,7 +1153,8 @@ class PaymentsController extends Controller
 
         return [
             'rate' => $fallbackRate,
-            'usd_amount' => round(max(0.01, $amountZar * $fallbackRate), 2),
+            'usd_amount' => round(max(0.01, $amountZar * $fallbackRate * (1 + $paypalFxMarkup)), 2),
+            'markup_applied' => $paypalFxMarkup,
             'source' => 'fallback',
         ];
     }
@@ -1199,6 +1209,7 @@ class PaymentsController extends Controller
                 ]);
 
             if ($status === 'completed') {
+                $this->provisionCompletedPayments((string) $orderId);
                 SendPaymentInvoice::dispatchFor((string) $orderId, 'paypal');
             }
 

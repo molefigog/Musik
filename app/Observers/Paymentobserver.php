@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Jobs\CreditSellerForPayment;
 use App\Models\Payment;
 use App\Services\WalletService;
 use Illuminate\Support\Facades\Log;
@@ -12,7 +13,7 @@ class PaymentObserver
 
     public function created(Payment $payment): void
     {
-        $this->wallet->creditSeller($payment);
+        CreditSellerForPayment::dispatch($payment->id);
     }
 
     public function updated(Payment $payment): void
@@ -24,7 +25,7 @@ class PaymentObserver
         ]);
 
         if ($payment->wasChanged('status') && $payment->status === 'completed') {
-            $this->wallet->creditSeller($payment);
+            CreditSellerForPayment::dispatch($payment->id);
         }
 
         if ($payment->wasChanged('status') && $payment->status !== 'completed' && $payment->credited_at) {

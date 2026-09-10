@@ -13,12 +13,12 @@ class PaymentStatsWidget extends BaseWidget
     protected function getStats(): array
     {
         $successfulToday = Payment::query()
-            ->where('status', 'success')
+            ->where('status', 'completed')
             ->whereDate('created_at', today())
             ->sum('amount');
 
         $totalRevenue = Payment::query()
-            ->where('status', 'success')
+            ->where('status', 'completed')
             ->sum('amount');
 
         $pendingCount = Payment::query()
