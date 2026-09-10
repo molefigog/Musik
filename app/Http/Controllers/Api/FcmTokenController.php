@@ -16,9 +16,9 @@ class FcmTokenController extends Controller
         ]);
 
         FcmToken::updateOrCreate(
-            ['token' => $validated['token']],
+            ['user_id' => $request->user()->id],   // match by USER now
             [
-                'user_id' => $request->user()->id,
+                'token' => $validated['token'],
                 'device_name' => $validated['device_name'] ?? null,
             ],
         );
